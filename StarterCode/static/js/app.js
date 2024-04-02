@@ -47,7 +47,20 @@ function optionChanged(id){
             }
 
             const layout1 = {
-                title: `Sample ${id}'s Data`
+                title: `Sample ${id}'s Data`,
+                xaxis: {
+                    title: {
+                      text: 'Sample Values',
+                      font: {
+                        size: 18,
+                      }
+                    },
+                  },
+                yaxis:{
+                    title:{
+                        text: "Sample ID"
+                    }
+                }
             };
 
             let traces = [trace1];
@@ -70,7 +83,20 @@ function optionChanged(id){
             }
             
             const layout2 = {
-                title: `Sample ${id}'s Data`
+                title: `Sample ${id}'s Data`,
+                xaxis: {
+                    title: {
+                      text: 'OTU ID',
+                      font: {
+                        size: 18,
+                      }
+                    },
+                  },
+                yaxis:{
+                    title:{
+                        text: "Sample Values"
+                    }
+                }
             }
 
             traces = [trace2];
