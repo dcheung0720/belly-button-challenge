@@ -96,7 +96,8 @@ function optionChanged(id){
                 demoInfoRef.append('hr')
             })
 
-            //////////////////////////////////////////// Gauge ////////////////////////////////////////////////////
+            //////////////////////////////////////////// Gauge /////////////////////////////////////////////////
+
             const colors = [
                 [245, 245, 220], // Beige
                 [220, 236, 173],
@@ -110,6 +111,8 @@ function optionChanged(id){
                 [18, 112, 0],    // Green
             ];
 
+            const N = Array.from(Array(10).keys());
+
             var data = [
                 {
                     domain: { x: [0, 1], y: [0, 1] },
@@ -118,19 +121,56 @@ function optionChanged(id){
                     type: "indicator",
                     mode: "gauge+number",
                     gauge: {
+                        bar: {color: null},
                         axis: { range: [null, 10] },
                         steps: colors.map((d, idx) => {
                             const r = d[0];
                             const g = d[1];
                             const b = d[2];
-                            return { range: [idx, idx + 1], color: `rgb(${r}, ${g}, ${b})` }
+                            return { range: [idx, idx + 1], color: `rgb(${r}, ${g}, ${b})`, text: `${idx}-${idx + 1}` }
                         })
-                    }
+                    },
                 }
             ];
 
-            var layout = { width: 600, height: 450, margin: { t: 0, b: 0 } };
+            // normalize the belly button angle -> map 0 - 10 to an angle from 0 - 180
+            var angle = 180 - (180 * (data[0].value / (data[0].gauge.axis.range[1])));
+
+            //create anootationn for the gauge meter
+            var annotations = N.map(idx =>{
+                const angleOffset = -Math.PI/45;
+                const x = 0.5 + 0.45 * Math.cos(Math.PI - idx * Math.PI / 10 + Math.sqrt(idx) * angleOffset);
+                const y = .25 + 0.45 * Math.sin(Math.PI - idx * Math.PI / 10 + Math.sqrt(idx) * angleOffset);
+                return {
+                    x: x,
+                    y: y,
+                    showarrow: false,
+                    text: `${idx}-${idx + 1}`
+                }
+            })
+            
+
+            var layout = { 
+                width: 600, 
+                height: 450, 
+                margin: { t: 0, b: 0 },
+                //create a line/needle using the value of the belly button wash
+                shapes: [{
+                    type: 'line',
+                    x0: 0.5,
+                    y0: 0.25,
+                    x1: 0.5 + 0.4 * Math.cos(angle * Math.PI / 180),
+                    y1: .25 + 0.4 * Math.sin(angle * Math.PI / 180),
+                    line: {
+                        color: 'black',
+                        width: 3
+                    }
+                }],
+                annotations: annotations
+            };
+
             Plotly.newPlot('gauge', data, layout);
+
         }
     );
 };
